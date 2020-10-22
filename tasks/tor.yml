@@ -1,0 +1,52 @@
+---
+- name: add tor repository
+  template:
+    src: templates/tor.repo.j2
+    dest: /etc/yum.repos.d/tor.repo
+    owner: root
+    group: root
+    mode: 0600
+  register: tor_repository
+
+- name: install tor
+  package:
+    name: "{{ packages }}"
+    state: present
+    update_cache: "{{ tor_repository.changed }}"
+  vars:
+    packages:
+      - tor
+      - policycoreutils-python-utils
+  notify:
+    - tor restart
+
+- name: allow tor to bind to non-reserved ports
+  command:
+    cmd: semanage permissive -a tor_t
+  changed_when: false
+  when: tor_repository.changed
+
+- name: copy torrc
+  template:
+    src: templates/torrc.j2
+    dest: /etc/tor/torrc
+    owner: root
+    group: root
+    mode: 0644
+  register: tor_torrc
+  notify:
+    - tor restart
+  tags:
+  - tor
+
+- name: create tor ferm configuration
+  template: src=templates/ferm.conf.j2 dest=/etc/ferm/ferm.d/1200-tor.conf owner=root group=root
+  notify:
+    - ferm restart
+  tags:
+  - tor
+
+- name: enable tor service
+  service:
+    name: "tor"
+    enabled: yes

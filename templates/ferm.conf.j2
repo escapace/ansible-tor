@@ -1,0 +1,18 @@
+{% if tor_networks | ipv4 | length > 0 %}
+{% for cidr in tor_networks %}
+domain ip table filter {
+    chain INPUT {
+        saddr {{ cidr }} daddr $DUMMY0_V4_CIDR proto (udp tcp) dport 53 ACCEPT;
+        saddr {{ cidr }} daddr $DUMMY0_V4_CIDR proto (udp tcp) dport 9040 ACCEPT;
+        saddr {{ cidr }} mod addrtype dst-type LOCAL DROP;
+    }
+}
+
+domain ip table nat {
+    chain PREROUTING {
+        saddr {{ cidr }} proto tcp tcp-flags (FIN SYN RST ACK) SYN DNAT to-destination {{ dummy_ipv4_cidr | ipaddr('network') | ipmath(1) }}:9040;
+        saddr {{ cidr }} mod addrtype dst-type LOCAL RETURN;
+    }
+}
+{% endfor %}
+{% endif %}

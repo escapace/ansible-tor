@@ -1,0 +1,45 @@
+---
+
+dummy_ipv4_cidr: 10.254.254.1/24
+
+tor_exclude_nodes:
+  - FR
+
+tor_exclude_exit_nodes:
+  - US
+  - AU
+  - CA
+  - NZ
+  - GB
+  - FR
+
+tor_strict_nodes: true
+tor_virtual_network_ipv4: 10.192.0.0/16
+tor_new_circuit_period: 40
+tor_max_circuit_dirtiness: 600
+tor_max_client_circuits_pending: 48
+tor_use_entry_guards: true
+tor_use_entry_guards_as_dir_guards: true
+tor_enforce_distinct_subnets: true
+tor_track_host_exits: 
+  - .facebook.com
+  - .facebook.net
+  - .twitter.com
+  - .fbcdn.com
+  - .fbcdn.net
+  - .akamaihd.com
+  - .google.com
+  - .google.it
+  - .google.fr
+  - .google.de
+  - .google.br
+  - .yandex.ru
+  - .yandex.com
+  - .gmail.com
+  - .googleapis.com
+  - .gstatic.com
+  - .adform.net
+  - .google-analitics.com
+  - .googletagservices.com
+
+tor_role_debug: false
