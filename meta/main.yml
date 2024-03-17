@@ -14,7 +14,6 @@ galaxy_info:
   galaxy_tags:
     - escapace
     - tor
-
 # dependencies:
 #   - { role: escapace.epel }
 #   - { role: escapace.ferm }
