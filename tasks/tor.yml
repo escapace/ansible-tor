@@ -1,5 +1,4 @@
 ---
-
 - name: add tor repository
   ansible.builtin.template:
     src: templates/tor.repo.j2
@@ -33,12 +32,12 @@
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
 
 - name: include
   ansible.builtin.lineinfile:
     path: /etc/tor/torrc
-    line: '%include /etc/tor/torrc.d/*.conf'
+    line: "%include /etc/tor/torrc.d/*.conf"
 
 # - name: copy torrc
 #   ansible.builtin.template:

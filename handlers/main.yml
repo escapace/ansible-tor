@@ -1,5 +1,6 @@
 ---
-
 - name: tor restart
-  service: name=tor state=restarted
+  ansible.builtin.service:
+    name: tor
+    state: restarted
   when: not tor_role_debug

@@ -1,5 +1,4 @@
 ---
-
 # - name: check tor settings
 #   assert:
 #     that:
@@ -9,7 +8,7 @@
 #   tags:
 #     - tor
 
-- include_tasks: tor.yml
+- ansible.builtin.include_tasks: tor.yml
   when: ansible_os_family == "RedHat"
   tags:
     - tor
