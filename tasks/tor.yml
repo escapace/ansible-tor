@@ -1,15 +1,16 @@
 ---
+
 - name: add tor repository
-  template:
+  ansible.builtin.template:
     src: templates/tor.repo.j2
     dest: /etc/yum.repos.d/tor.repo
     owner: root
     group: root
-    mode: 0600
+    mode: "0600"
   register: tor_repository
 
 - name: install tor
-  package:
+  ansible.builtin.package:
     name: "{{ packages }}"
     state: present
     update_cache: "{{ tor_repository.changed }}"
@@ -21,32 +22,50 @@
     - tor restart
 
 - name: allow tor to bind to non-reserved ports
-  command:
-    cmd: semanage permissive -a tor_t
+  ansible.builtin.command:
+    cmd: setsebool -P tor_bind_all_unreserved_ports 1
   changed_when: false
   when: tor_repository.changed
 
-- name: copy torrc
-  template:
-    src: templates/torrc.j2
-    dest: /etc/tor/torrc
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/tor/torrc.d
+    state: directory
     owner: root
     group: root
-    mode: 0644
-  register: tor_torrc
-  notify:
-    - tor restart
-  tags:
-  - tor
+    mode: '0755'
 
-- name: create tor ferm configuration
-  template: src=templates/ferm.conf.j2 dest=/etc/ferm/ferm.d/1200-tor.conf owner=root group=root
-  notify:
-    - ferm restart
-  tags:
-  - tor
+- name: include
+  ansible.builtin.lineinfile:
+    path: /etc/tor/torrc
+    line: '%include /etc/tor/torrc.d/*.conf'
 
-- name: enable tor service
-  service:
-    name: "tor"
-    enabled: yes
+# - name: copy torrc
+#   ansible.builtin.template:
+#     src: templates/torrc.j2
+#     dest: /etc/tor/torrc
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   register: tor_torrc
+#   notify:
+#     - tor restart
+#   tags:
+#     - tor
+#
+# # - name: create tor ferm configuration
+# #   ansible.builtin.template:
+# #     src: templates/ferm.conf.j2
+# #     dest: /etc/ferm/ferm.d/1200-tor.conf
+# #     owner: root
+# #     group: root
+# #     mode: "0644"
+# #   notify:
+# #     - ferm restart
+# #   tags:
+# #     - tor
+#
+# - name: enable tor service
+#   ansible.builtin.service:
+#     name: "tor"
+#     enabled: true

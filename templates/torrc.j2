@@ -255,9 +255,18 @@ CookieAuthFileGroupReadable 1
 ## The %include option can be used recursively.
 #%include /etc/torrc.d/
 #%include /etc/torrc.custom
-AllowDotExit 0
 AutomapHostsOnResolve 0
 ClientRejectInternalAddresses 1
+
+IsolateDestAddr 1
+IsolateDestPort 1
+
+DNSPort 5353
+AutomapHostsOnResolve 1
+AutomapHostsSuffixes .exit,.onion
+
+Sandbox 1
+AvoidDiskWrites 1
 
 StrictNodes {{ tor_strict_nodes | bool | ternary("1", "0") }}
 ExcludeExitNodes {{ tor_exclude_exit_nodes | map('regex_replace', '^(.*)$', '{\\1}') | join(',') }}

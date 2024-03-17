@@ -1,5 +1,4 @@
 ---
-
 dummy_ipv4_cidr: 10.254.254.1/24
 
 tor_exclude_nodes:
@@ -21,7 +20,7 @@ tor_max_client_circuits_pending: 48
 tor_use_entry_guards: true
 tor_use_entry_guards_as_dir_guards: true
 tor_enforce_distinct_subnets: true
-tor_track_host_exits: 
+tor_track_host_exits:
   - .facebook.com
   - .facebook.net
   - .twitter.com
